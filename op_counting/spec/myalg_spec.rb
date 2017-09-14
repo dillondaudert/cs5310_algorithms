@@ -10,7 +10,7 @@ describe MyAlg do
 
     #before each test, create a new myalg object
     before :each do
-        @myalg = MyAlg.new [8, 6, 7, 5, 3, 0, 9]
+        @myalg = MyAlg.new [8, -6, 7, -5, 3, 0, -9]
     end
 
     describe "#new" do
@@ -29,7 +29,7 @@ describe MyAlg do
 
     describe "#array" do
         it "returns the correct array" do
-            expect(@myalg.array).to eql [8, 6, 7, 5, 3, 0, 9] 
+            expect(@myalg.array).to eql [8, -6, 7, -5, 3, 0, -9] 
         end
     end
 
@@ -45,11 +45,23 @@ describe MyAlg do
     end
 
     describe "#linear_search" do
+        it "returns nil when item not found" do
+            expect(@myalg.linear_search 10).to be nil
+        end
 
+        it "returns the item if found" do
+            expect(@myalg.linear_search 3).to eql 3
+        end
+
+#        it "throws an error if no argument is passed in" do
+#            expect(@myalg.linear_search).to raise_error ArgumentError
+#        end
     end
 
     describe "#swap" do
-
+        it "swaps even indices with consecutive odd indices" do
+            expect(@myalg.swap).to eql [-6, 8, -5, 7, 0, 3, -9]
+        end
     end
 
 end

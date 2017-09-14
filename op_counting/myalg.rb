@@ -34,4 +34,25 @@ class MyAlg
         end
         return @array
     end
+
+    def linear_search tar
+        for i in 0 ... @array.length
+            if @array[i] == tar
+                return @array[i]
+            end
+        end
+        return nil
+    end
+
+    def swap
+        i = 0
+        while i < @array.length - 1
+            temp = @array[i]
+            @array[i] = @array[i+1]
+            @array[i+1] = temp
+            i = i + 2
+        end
+        
+        return @array
+    end
 end
