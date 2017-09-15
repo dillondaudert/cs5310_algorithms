@@ -36,12 +36,17 @@ class MyAlg
     end
 
     def linear_search tar
+
+        if not tar.is_a? Integer
+            raise ArgumentError
+        end
+
         for i in 0 ... @array.length
             if @array[i] == tar
-                return @array[i]
+                return i
             end
         end
-        return nil
+        return -1
     end
 
     def swap

@@ -34,7 +34,7 @@ describe MyAlg do
     end
 
     describe "#bubble_sort" do
-        it "returns the array" do
+        it "returns an array" do
             expect(@myalg.bubble_sort).to be_an_instance_of Array
         end
 
@@ -42,25 +42,39 @@ describe MyAlg do
             arr = @myalg.bubble_sort
             expect(arr.each_cons(2).all? {|a, b| (a <= b)}).to be true
         end
+
+        context "with all the same integer" do
+            it "sorts the array" do
+                myalg2 = MyAlg.new [2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+                expect(myalg2.bubble_sort).to eql [2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+            end
+        end
     end
 
     describe "#linear_search" do
-        it "returns nil when item not found" do
-            expect(@myalg.linear_search 10).to be nil
+        it "returns -1 when item not found" do
+            expect(@myalg.linear_search 10).to be -1
         end
 
-        it "returns the item if found" do
-            expect(@myalg.linear_search 3).to eql 3
+        it "returns the item index if found" do
+            ind = @myalg.linear_search 3
+            expect(@myalg.array[ind]).to eql 3
         end
 
-#        it "throws an error if no argument is passed in" do
-#            expect(@myalg.linear_search).to raise_error ArgumentError
-#        end
+        it "throws an error if a non-integer is passed in" do
+            expect {ans = @myalg.linear_search 3.3}.to raise_error ArgumentError
+
+        end
     end
 
     describe "#swap" do
         it "swaps even indices with consecutive odd indices" do
             expect(@myalg.swap).to eql [-6, 8, -5, 7, 0, 3, -9]
+        end
+
+        it "returns the same array if array.length is 1" do
+            myalg2 = MyAlg.new [3]
+            expect(myalg2.swap).to eql [3]
         end
     end
 
