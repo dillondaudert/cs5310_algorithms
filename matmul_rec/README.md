@@ -8,10 +8,18 @@ Implement a simple recursive matrix multiply algorithm, using test-driven develo
 Include the raw data used for testing, and a short report summarizing the results as 
 well as what running time the algorithm is running in.
 
-### Algorithm
 Assume only nxn (square) matrices, where n is a power of 2; throw an error otherwise.
 
-### Empirical Testing
+## Files
+- matmul.jl: contains the matrix multiply algorithm
+- bench.jl: contains functions for generating data and timing matmul_rec
+- test/matmul_test.jl: contains tests for matrix multiply algorithm
+
+## Unit Tests
+Run the unit tests by calling `julia test/matmul_test.jl` 
+
+
+## Empirical Testing
 Do empirical testing of this algorithm to verify that the running time is O(n^3). 
 Consider:
 - How to generate test data of various sizes
@@ -19,7 +27,7 @@ Consider:
 - How to record the running time
 - How to ensure that only the algorithm, and not data generation / IO, are measured
 
-#### Explanation of Timings (bench.jl):
+### Timing matmul_rec() (bench.jl):
 The function time_matmul() times the matmul_rec() function for square matrices of 
 sizes 2^n, where 0 <= n <= nsamples.
 
@@ -35,7 +43,9 @@ are generated ahead of time, the time to allocate and generate each sample does 
 factor in to this time. These elapsed times are collected in an array, one array 
 for each size of matrix. The means of these are calculated and returned.
 
-### Files
-- matmul.jl: contains the matrix multiply algorithm
-- bench.jl: contains functions for generating data and timing matmul_rec
-- test/matmul_test.jl: contains tests for matrix multiply algorithm
+### Analyzing the Results
+The results of one run of bench.jl are below:
+
+[6.85203e-7, 4.15299e-6, 4.15358e-5, 9.95697e-5, 0.000737527, 0.00554486, 0.0446603, 
+0.350661, 2.80905]
+
