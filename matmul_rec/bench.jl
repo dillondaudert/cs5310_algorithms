@@ -20,9 +20,12 @@ function time_matmul(maxsize, nsamples)
     times = []
 
     for i in 0:maxsize
+        # generate nsamples of 2^i x 2^i matrices
         samples = rand(Float64, 2^i, 2^i, 2, nsamples)
         @printf("Timing %dx%d matrices\n", 2^i, 2^i)
+        # store the times in an array
         res = @timed push!(times, mean([@elapsed matmul_rec(samples[:,:,1,i], samples[:,:,2,i]) for i in 1:nsamples]))
+        # print total time taken
         println(repr(res[2]), " seconds")
     end
 

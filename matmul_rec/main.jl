@@ -4,7 +4,7 @@ include("./bench.jl")
 include("./visual.jl")
 
 function main()
-    times = time_matmul(9, 100)
+    times = time_matmul(4, 100)
     plot_times(times)
 end
 

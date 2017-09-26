@@ -19,9 +19,9 @@ Consider:
 - How to record the running time
 - How to ensure that only the algorithm, and not data generation / IO, are measured
 
-#### Explanation of Tests (bench.jl):
+#### Explanation of Timings (bench.jl):
 The function time_matmul() times the matmul_rec() function for square matrices of 
-sizes 1 <= 2^n <= 512. 
+sizes 2^n, where 0 <= n <= nsamples.
 
 After compiling matmul_rec once (As a consequence of Julia's
 JIT compiler, the first run of a function is usually much slower than subsequent 
@@ -36,9 +36,6 @@ factor in to this time. These elapsed times are collected in an array, one array
 for each size of matrix. The means of these are calculated and returned.
 
 ### Files
-- main.jl: driver script that generates and saves data, runs tests, outputs results
 - matmul.jl: contains the matrix multiply algorithm
 - bench.jl: contains functions for generating data and timing matmul_rec
 - test/matmul_test.jl: contains tests for matrix multiply algorithm
-- test/data_test.jl: contains tests for data utility functions
-- visual.jl: plot the mean execution time of matmul_rec 
