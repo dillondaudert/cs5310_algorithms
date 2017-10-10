@@ -9,6 +9,10 @@ module MyQuicksort
 
 export Quicksort!, RandomizedQuicksort!
 
+function Quicksort!(A::AbstractArray)
+    Quicksort!(A, 1, length(A))
+end
+
 function Quicksort!(A::AbstractArray, p, r)
     "Quicksort takes an array and sorts it in-place."
     if p < r
