@@ -2,7 +2,6 @@
 
 abstract type AbstractGraph end
 
-# TODO: Graph Constructor that validates the inputs
 struct Graph <: AbstractGraph
     """Generic type for all graphs"""
     vertices::Dict
@@ -20,7 +19,6 @@ end
 function getedge(G::AbstractGraph, v, u)
     """Return the weight of the edge from v to u as a Nullable{T}"""
     # get the index of each vertex in G's dictionary
-    # TODO: throw exception if not valid vertices
     vᵢ = G.vertices[v]
     uⱼ = G.vertices[u]
 
