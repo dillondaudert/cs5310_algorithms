@@ -2,13 +2,20 @@
 
 abstract type AbstractGraph end
 
+# TODO: Graph Constructor that validates the inputs
 struct Graph <: AbstractGraph
+    """Generic type for all graphs"""
     vertices::Dict
     edges::AbstractArray{Nullable}
+    function Graph(vertices::Dict, edges::AbstractArray)
+        """Inner constructor method for Graph, validates edge matrix size"""
+        # check that the size of edges is correct
+        if (length(vertices), length(vertices)) != size(edges)
+            error("invalid edge matrix: must be nxn where n is the number of vertices")
+        end
+        new(vertices, convert(AbstractArray{Nullable}, edges))
+    end
 end
-
-# TODO: Graph Constructor that validates the inputs
-# TODO: Weighted / Unweighted, Directed / Undirected Graphs
 
 function getedge(G::AbstractGraph, v, u)
     """Return the weight of the edge from v to u as a Nullable{T}"""

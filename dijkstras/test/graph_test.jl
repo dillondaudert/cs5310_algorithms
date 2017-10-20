@@ -11,10 +11,9 @@ G2_ = (Dict("A" => 1, "B" => 2, "C" => 3, "D" => 4), [0 1 4 3; 1 0 Nullable() 9;
 
 @testset "All Tests" begin
     @testset "Constructor Tests" begin
-        @test Graph(Dict(), []) isa Graph
-        @test typeof(Graph(Dict(), [])) <: AbstractGraph
+        @test Graph(Dict(), Array{Real}(0,0)) isa Graph
+        @test typeof(Graph(Dict(), Array{Real}(0,0))) <: AbstractGraph
         @test typeof(Graph(G1_...).edges) <: AbstractArray{Nullable}
-        @test Graph(Dict(), [3.]) isa Graph
     end
     # declare some global things
     G0 = Graph(G0_...)
