@@ -48,10 +48,13 @@ function allshortestpaths(G::AbstractGraph)
     """Find shortest paths between all pairs of nodes in G.
     Returned as a 2D array of distances."""
 
-    # for each node u with index i in G.vertices
-    #     find shortest paths between u and 
-    #       nodes vⱼ with index j > i
-    #     add distances to final matrix
-    # make matrix symmetric
+    # matrix of shortest paths
+    D = Array{Real}(size(G.edges)...)
+    # iterate through each node
+    for (v, i) in G.vertices
+        Dᵥ = dijkstra(G, v)
+        D[:,i] = Dᵥ
+    end
 
+    return D
 end
