@@ -42,17 +42,18 @@ G2_ = (Dict("A" => 1, "B" => 2, "C" => 3, "D" => 4), [0 1 4 3; 1 0 Nullable() 9;
             end
         end
     end
-    @testset "alledges Tests" begin
+    
+    @testset "getadjs Tests" begin
         # 2 nodes 0 edges
-        @test isempty(alledges(G0, "A"))
+        @test isempty(getadjs(G0, "A"))
         # 2 nodes 1 edge
-        @test alledges(G1, "A") == Set(["A", "B"])
-        @test alledges(G1, "B") == Set(["A", "B"])
+        @test getadjs(G1, "A") == Set(["A", "B"])
+        @test getadjs(G1, "B") == Set(["A", "B"])
         # 4 nodes many edges
-        @test alledges(G2, "A") == Set(["A", "B", "C", "D"])
-        @test alledges(G2, "B") == Set(["A", "B", "D"])
-        @test alledges(G2, "C") == Set(["A", "C"])
-        @test alledges(G2, "D") == Set(["A", "B", "D"])
+        @test getadjs(G2, "A") == Set(["A", "B", "C", "D"])
+        @test getadjs(G2, "B") == Set(["A", "B", "D"])
+        @test getadjs(G2, "C") == Set(["A", "C"])
+        @test getadjs(G2, "D") == Set(["A", "B", "D"])
     end
 
 end

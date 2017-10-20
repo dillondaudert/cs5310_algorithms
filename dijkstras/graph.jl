@@ -21,16 +21,15 @@ function getedge(G::AbstractGraph, v, u)
     return G.edges[vᵢ, uⱼ]
 end
 
-function alledges(G::AbstractGraph, v)
-    """Return an array of nodes connected to *v* by an undirected edge"""
+function getadjs(G::AbstractGraph, v)
+    """Return an array of nodes adjacent to *v*."""
     # TODO: Make this handle undirected/directed edges in some way
-    edges = []
+    adjs = []
     for u in eachindex(G.vertices)
-        edge = getedge(G, v, u)
-        if !isnull(edge)
-            push!(edges, u)
+        if !isnull(getedge(G, v, u))
+            push!(adjs, u)
         end
     end
 
-    return Set(edges)
+    return Set(adjs)
 end
