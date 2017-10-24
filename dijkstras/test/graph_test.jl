@@ -9,7 +9,7 @@ G1_ = (Dict("A" => 1, "B" => 2), [0 3; 3 0])
 G2_ = (Dict("A" => 1, "B" => 2, "C" => 3, "D" => 4), [0 1 4 3; 1 0 Nullable() 9; 4 Nullable() 0 Nullable(); 3 9 Nullable() 0])
 
 
-@testset "All Tests" begin
+@testset "Graph Tests" begin
     @testset "Constructor Tests" begin
         @test Graph(Dict(), Array{Real}(0,0)) isa Graph
         @test typeof(Graph(Dict(), Array{Real}(0,0))) <: AbstractGraph
