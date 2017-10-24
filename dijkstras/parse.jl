@@ -1,4 +1,7 @@
-# function that opens a graph input file and returns a tuple (Dict, array)
+# Class: CS 5310
+# Date: 10/24/2017
+# Assignemtn: 4
+# Author: Dillon Daudert
 
 """
 Parse a graph text file.
