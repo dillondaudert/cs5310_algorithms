@@ -2,10 +2,12 @@
 
 using DataStructures
 
+"""
+Find the shortest path in a weighted, undirected graph from *start* to 
+all other nodes in *G*.
+Return an array of distances.
+"""
 function dijkstra(G::AbstractGraph, start)
-    """Find the shortest path in a weighted, undirected graph from *start* to 
-    all other nodes in *G*.
-    Returned as an array of distances."""
 
     # TODO: Verify in some way (here or via dispatch) that graph is nonnegative,
     #       weighted, undirected
@@ -44,9 +46,11 @@ function dijkstra(G::AbstractGraph, start)
     return D
 end
 
+"""
+Find shortest paths between all pairs of nodes in G.
+Return a 2D array of distances.
+"""
 function allshortestpaths(G::AbstractGraph)
-    """Find shortest paths between all pairs of nodes in G.
-    Returned as a 2D array of distances."""
 
     # matrix of shortest paths
     D = Array{Real}(size(G.edges)...)
