@@ -1,4 +1,7 @@
-# graph struct and methods tests
+# Class: CS 5310
+# Date: 10/24/2017
+# Assignment: 4
+# Author: Dillon Daudert
 
 using Base.Test
 include("../graph.jl")
