@@ -1,4 +1,7 @@
-# graph struct and methods tests
+# Class: CS 5310
+# Date: 10/24/2017
+# Assignment: 4
+# Author: Dillon Daudert
 
 using Base.Test
 include("../graph.jl")
@@ -15,7 +18,7 @@ G1 = Graph(G1_...)
 G2 = Graph(G2_...)   
 G3 = Graph(G3_...)
 
-@testset "All Tests" begin
+@testset "Path Algorithms Tests" begin
     @testset "dijkstras Tests" begin
         # 2 nodes 0 edges
         @test dijkstra(G0, "A") == [0, Inf]

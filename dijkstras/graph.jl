@@ -1,13 +1,17 @@
-# graph struct and methods
+# Class: CS 5310
+# Date: 10/24/2017
+# Assignment: 4
+# Author: Dillon Daudert
 
 abstract type AbstractGraph end
 
+"Generic type for all graphs."
 struct Graph <: AbstractGraph
-    """Generic type for all graphs"""
     vertices::Dict
     edges::AbstractArray{Nullable}
     function Graph(vertices::Dict, edges::AbstractArray)
-        """Inner constructor method for Graph, validates edge matrix size"""
+        """Inner constructor method for Graph.
+        Validate edge matrix size."""
         # check that the size of edges is correct
         if (length(vertices), length(vertices)) != size(edges)
             error("invalid edge matrix: must be nxn where n is the number of vertices")
@@ -16,8 +20,8 @@ struct Graph <: AbstractGraph
     end
 end
 
+"Return the weight of the edge from v to u as a Nullable{T}."
 function getedge(G::AbstractGraph, v, u)
-    """Return the weight of the edge from v to u as a Nullable{T}"""
     # get the index of each vertex in G's dictionary
     vᵢ = G.vertices[v]
     uⱼ = G.vertices[u]
@@ -26,8 +30,8 @@ function getedge(G::AbstractGraph, v, u)
     return G.edges[vᵢ, uⱼ]
 end
 
+"Return an array of nodes adjacent to *v*."
 function getadjs(G::AbstractGraph, v)
-    """Return an array of nodes adjacent to *v*."""
     # TODO: Make this handle undirected/directed edges in some way
     adjs = []
     for u in eachindex(G.vertices)

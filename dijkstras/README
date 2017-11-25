@@ -1,0 +1,30 @@
+Class: CS 5310
+Date: 10/24/2017
+Assignment: 4
+Author: Dillon Daudert
+
+- Overview -
+Dijkstra's algorithm and All Shortest Paths implemented in Julia.
+
+- Comments -
+I use the DataStructures package for the priority queue in Dijkstra's
+algorithm. This package is not in Julia.Base, but it should be installed
+by default. If not, open the Julia REPL and add the package with:
+    julia> Pkg.add("DataStructures")
+
+- How To Use -
+Executing 
+    $> julia main.jl
+builds the example graph found in ./test/ex_graph.txt and calculates all 
+shortest paths, outputting as a formatted matrix.
+
+To call for a different graph, execute:
+    $> julia main.jl graphfile
+where graphfile is the path to a text file with the
+formatted description of a graph according to the project format.
+
+- Unit Tests -
+Unit tests for the Graph type are found in test/graph_tests.jl
+Unit tests for the path algorithms are found in test/paths_tests.jl
+To run, execute:   
+    $> julia [graph|paths]_tests.jl
