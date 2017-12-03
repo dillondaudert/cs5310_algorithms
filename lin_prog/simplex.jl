@@ -25,11 +25,11 @@ Return the resulting linear pogram and the optimal solution x.
 If solution is unbounded, return (-1, -1, -1, -1, -1, -1, -1).
 """
 function _innersimplex(N, B, A, b, c, v)
-    Δ = fill(Inf, (1, length(b)))
     # find index of nonbasic var with positive coef in c
     N⁺ = IntSet(find([j > 0 for j in c]))
     # while some index has cⱼ > 0
     while length(N⁺) > 0
+        Δ = fill(Inf, (1, length(b)))
         # choose index e for which cₑ > 0
         en = pop!(N⁺)
         # find how much each basic variable constrains xₑ
@@ -92,8 +92,8 @@ function pivot(N::IntSet, B::IntSet, A, b, c, v, en::Int, lv::Int)
     c′[lv] = -c[en]*A′[en, lv]
 
     # Compute new sets of basic and nonbasic variables
-    N′ = union(setdiff!(N, en), lv)
-    B′ = union(setdiff!(B, lv), en)
+    N′ = union(setdiff(N, en), lv)
+    B′ = union(setdiff(B, lv), en)
     return (N′, B′, A′, b′, c′, v′)
 end
 
