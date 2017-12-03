@@ -1,14 +1,18 @@
 # basic functions
 
 """
-Turn a set of linear constraints in standard form to an equivalent set of 
-constraints in slack form.
-Return A′, the constraints in slack form
+Expand a linear program in matrix form to include m = length(b) slack
+variables. The slack variables are assumed to have indices n+1, n+2, ..., n+m.
+Return (A′, b′, c′), the 
 """
-function toslack(A::AbstractArray, b::AbstractArray)
-    # create the matrix [b, -A]
-    A′ = similar(A, size(A, 1), size(A, 2)+1)
-    A′[:, 1] = b
-    A′[:, 2:size(A′, 2)] = -A
-    return A′
+function expandlp(A::AbstractArray, b::AbstractArray, c::AbstractArray)
+    n = length(c) # number of nonbasic vars
+    m = length(b) # number of basic vars
+    A′ = fill(0.0, (n+m, n+m))
+    b′ = fill(0.0, (1, n+m))
+    c′ = fill(0.0, (1, n+m))
+    A′[1:m, 1:n] = A
+    b′[1:m] = b
+    c′[1:n] = c
+    return (A′, b′, c′)
 end
