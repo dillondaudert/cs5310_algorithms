@@ -174,9 +174,13 @@ function initsimplex(A, b, c)
         b′ = bₐ
         c′ = fill(0.0, (1, n+m))
         c′[1:n] = c
+        # remove 1 from nonbasics, decrement others
+        N′ = setdiff(N′, 1)
+        N′ = IntSet([i-1 for i ∈ N′])
+        B′ = IntSet([i-1 for i ∈ B′])
 
         # the original nonbasic variables were the first 1:n variables
-        N⁰ = IntSet([1:n])
+        N⁰ = IntSet(1:n)
 
         # some terms in the original obj function may now be basic. for each
         # of these, replace it by the right-hand side of its associated 
