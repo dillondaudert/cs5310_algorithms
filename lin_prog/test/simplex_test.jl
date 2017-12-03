@@ -19,6 +19,15 @@ A = [0 0 -1/6 0 -1/6 1/3;
 c = [0 0 -1/6 0 -1/6 -2/3]
 b = [8. 4. 0. 18. 0. 0.]
 v = 28.
+trueA′ = [0 0 0 0 0 0;
+      1 0 15/6 0 1/2 0;
+      0 0 0 0 0 0;
+      0 0 1/2 0 -1/2 0;
+      0 0 0 0 0 0;
+      3 0 -1/2 0 -1/2 0;]
+trueb′ = [0. 12. 0. 18. 0. 24.]
+truec′ = [2 0 -1/2 0 -1/2 0]
+truev′ = 12
 
 A₂ = [-1/6 -1/6 1/3;
      8/3 2/3 -1/3;
@@ -34,12 +43,13 @@ c₃ = [2 -1]
 @testset "All Tests" begin
     # test pivot
     @testset "Pivot Tests" begin
-        (N′, B′, A′, b′, c′, v′) = pivot!(N, B, A, b, c, v, en, lv)
+        (N′, B′, A′, b′, c′, v′) = pivot(N, B, A, b, c, v, en, lv)
         @test N′ == IntSet([1, 3, 5])
         @test B′ == IntSet([2, 4, 6])
-        @test v′ == 12
-        #@test b′ == 
-        #@test c′ == 
+        @test A′ == trueA′
+        @test v′ == truev′
+        @test b′ == trueb′
+        @test c′ == truec′
     end
 
     @testset "Inititalize Simplex Tests" begin
@@ -50,9 +60,18 @@ c₃ = [2 -1]
         @test c′ == [c₂... 0. 0. 0.]
         @test v′ == 0
         @testset "First Basic Infeasible Tests" begin
-            #(N′, B′, A′, b′, c′, v′) = initsimplex(A₃, b₃, c₃)
-            initsimplex(A₃, b₃, c₃)
+        #    (N′, B′, A′, b′, c′, v′) = initsimplex(A₃, b₃, c₃)
         end
     end
+
+#    @testset "Simplex Tests" begin
+#        (N′, B′, A′, b′, c′, v′, x) = simplex(A, b, c)
+#        @test v′ == v
+#        @test A == A′
+#        @test N′ == N
+#        @test B′ == B
+#        @test b′ == b
+#        @test c′ == c
+#    end
 
 end

@@ -12,17 +12,26 @@ Args
     b - the vector of constraint values
     c - the vector of objective function coefficients
 
-Return a vector x denoting an optimal solution
+Return the slack form linear program and a vector x denoting an optimal solution
 """
-function simplex(A, b, c)
-    (N, B, A, b, c, v) = init_simplex(A, b, c)
-    Δ = fill(0.0, size(b, 1))
+function simplex(A_, b_, c_)
+    (N, B, A, b, c, v) = initsimplex(A_, b_, c_)
+    return _innersimplex(N, B, A, b, c, v)
+end
+
+"""
+Perform the interior pivot loop for simplex()
+Return the resulting linear pogram and the optimal solution x. 
+If solution is unbounded, return (-1, -1, -1, -1, -1, -1, -1).
+"""
+function _innersimplex(N, B, A, b, c, v)
+    Δ = fill(0.0, (1, length(b)))
     # find index of nonbasic var with positive coef in c
     N⁺ = IntSet(find([j > 0 for j in c]))
     # while some index has cⱼ > 0
     while length(N⁺) > 0
         # choose index e for which cₑ > 0
-        en = pop(N⁺)
+        en = pop!(N⁺)
         # find how much each basic variable constrains xₑ
         for i ∈ B
             if A[i, en] > 0
@@ -34,20 +43,20 @@ function simplex(A, b, c)
         # choose an index l that minimizes Δᵢ
         lv = indmin(Δ)
         if Δ[lv] == Inf
-            return "Solution unbounded"
+            return (-1, -1, -1, -1, -1, -1, -1)
         else
             # swap basic and nonbasic variable
-            (N, B, A, b, c, v) = pivot!(N, B, A, b, c, v, en, lv)
+            (N, B, A, b, c, v) = pivot(N, B, A, b, c, v, en, lv)
         end
         N⁺ = IntSet(find([j > 0 for j in c]))
     end
 
-    x = fill(0.0, size(b, 1))
+    x = fill(0.0, (1, length(b)))
     for i ∈ B
         x[i] = b[i]
     end
 
-    return x
+    return (N, B, A, b, c, v, x)
 end
 
 
@@ -56,35 +65,59 @@ Take a slack form as input, index lv of leaving variable, index en of entering
 variable.
 Return the tuple (N′, B′, A′, b′, c′,v′) describing a new slack form.
 """
-function pivot!(N::IntSet, B::IntSet, A, b, c, v, en::Int, lv::Int)
+function pivot(N::IntSet, B::IntSet, A, b, c, v, en::Int, lv::Int)
+    A′ = fill(0.0, size(A))
+    b′ = fill(0.0, size(b))
+    c′ = fill(0.0, size(c))
     # Compute the coefficients of the equation for a new basic variable xₑ
-    b[en] = b[lv] / A[lv, en]
+    b′[en] = b[lv] / A[lv, en]
     for j ∈ setdiff(N, en)
-        A[en, j] = A[lv, j] / A[lv, en]
+        A′[en, j] = A[lv, j] / A[lv, en]
     end
-    A[en, lv] = 1/A[lv, en]
+    A′[en, lv] = 1/A[lv, en]
 
     # Compute the coefficients of the remaining constraints
     for i ∈ setdiff(B, lv)
-        b[i] = b[i] - A[i, en]*b[en]
+        b′[i] = b[i] - A[i, en]*b′[en]
         for j ∈ setdiff(N, en)
-            A[i, j] = A[i, j] - A[i, en]*A[en, j]
+            A′[i, j] = A[i, j] - A[i, en]*A′[en, j]
         end
-        A[i, lv] = -A[i, en]*A[en, lv]
+        A′[i, lv] = -A[i, en]*A′[en, lv]
     end
     
     # Compute the objective function
-    v′ = v + c[en]*b[en]
+    v′ = v + c[en]*b′[en]
 
     for j ∈ setdiff(N, en)
-        c[j] = c[j] - c[en]*A[en, j]
+        c′[j] = c[j] - c[en]*A′[en, j]
     end
-    c[lv] = -c[en]*A[en, lv]
+    c′[lv] = -c[en]*A′[en, lv]
 
     # Compute new sets of basic and nonbasic variables
-    union!(setdiff!(N, en), lv)
-    union!(setdiff!(B, lv), en)
-    return (N, B, A, b, c, v′)
+    N′ = union(setdiff!(N, en), lv)
+    B′ = union(setdiff!(B, lv), en)
+    return (N′, B′, A′, b′, c′, v′)
+end
+
+"""
+Given a slack form linear program and a varible we want to make nonbasic (lv),
+perform a degenerate pivot. Find nonbasic variable en such that v does not
+change.
+Return equivalent slack form.
+"""
+function degeneratepivot(N::IntSet, B::IntSet, A, b, c, v, lv::Int)
+    for en ∈ N
+        bₑ = b[lv] / A[lv, en]
+        v′ = v + c[en]*bₑ
+        # b[en] = b[lv] / A[lv, en]
+        # v′ = v + c[en]*b[en]
+        if v == v′
+            @printf("Performing degenerate pivot with en = %d, lv = %d\n", en, lv)
+            return pivot(N, B, A, b, c, v, en, lv)
+        end
+    end
+    @printf("No degenerate pivot found!\n")
+    return (N, B, A, b, c, v)
 end
 
 
@@ -96,8 +129,8 @@ no feasible solution exists.
 """
 function initsimplex(A, b, c)
     # implicitly test the basic solution to the initial slack form
-    n = size(A, 2) # number of nonbasic vars
-    m = size(A, 1) # number of basic vars
+    n = length(c) # number of nonbasic vars
+    m = length(b) # number of basic vars
     k = indmin(b)
     if b[k] ≥ 0
         # the initial solution is feasible
@@ -121,16 +154,50 @@ function initsimplex(A, b, c)
     lv = n + k + 1
     en = 1
     v = 0
-    (N, B, Lₐ, bₐ, cₐ, v) = pivot!(N, B, Lₐ, bₐ, cₐ, v, en, lv)
-    display(Lₐ)
-    print("\n")
-    display(bₐ)
-    print("\n")
-    display(cₐ)
+    (N, B, Lₐ, bₐ, cₐ, v) = pivot(N, B, Lₐ, bₐ, cₐ, v, en, lv)
+    # the basic solution is now feasible for Lₐ
     @test minimum(bₐ[[i for i ∈ B]]) ≥ 0
     @test length(N) == n+1
     @test length(B) == m
 
+    # Find optimal solution to Lₐ
+    (N′, B′, Lₐ, bₐ, cₐ, v, x) = _innersimplex(N, B, Lₐ, bₐ, cₐ, v)
+
+    # if this solution sets x₁ == 0
+    if x[1] == 0.
+        # if basic, make nonbasic
+        if 1 ∈ B′
+            (N′, B′, Lₐ, bₐ, cₐ, v) = degeneratepivot(N′, B′, A′, Lₐ, bₐ, cₐ, 1)
+        end
+        
+        # drop all x₁ terms from this solution and restore original objective
+        # function for L
+        A′ = Lₐ[:, 2:size(Lₐ, 2)] 
+        b′ = bₐ
+        c′ = fill(0.0, (1, n+m))
+        c′[1:n] = c
+
+        # the original nonbasic variables were the first 1:n variables
+        N⁰ = IntSet([1:n])
+
+        # some terms in the original obj function may now be basic. for each
+        # of these, replace it by the right-hand side of its associated 
+        # constraint
+        # this is the same as adding the appropriate A row to c and multiplying by the coeff
+        # c += c[basic]*A[basic, :]
+
+        # find the original nonbasic vars that are now basic in solution
+        swaps = N⁰ ∩ B′
+        for basic ∈ swaps
+            # replace the basic variables with their constraint values in c
+            c′ -= reshape(c′[basic] * A′[basic, :], (1, length(c′)))
+        end
+        
+        # return modified final slack form
+        return (N′, B′, A′, b′, c′, 0)
+    end
+
+    return (-1, -1, -1, -1, -1, -1)
 end
 
 
