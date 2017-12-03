@@ -41,7 +41,7 @@ function _innersimplex(N, B, A, b, c, v)
             end
         end
         # choose an index l that minimizes Δᵢ
-        lv = indmin(Δ)
+        lv = indmin(Δ[[i for i ∈ B]])
         if Δ[lv] == Inf
             return (-1, -1, -1, -1, -1, -1, -1)
         else
