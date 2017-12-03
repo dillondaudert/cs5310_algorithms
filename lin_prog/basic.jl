@@ -11,8 +11,8 @@ function expandlp(A::AbstractArray, b::AbstractArray, c::AbstractArray)
     A′ = fill(0.0, (n+m, n+m))
     b′ = fill(0.0, (1, n+m))
     c′ = fill(0.0, (1, n+m))
-    A′[1:m, 1:n] = A
-    b′[1:m] = b
+    A′[n+1:n+m, 1:n] = A
+    b′[n+1:n+m] = b
     c′[1:n] = c
     return (A′, b′, c′)
 end
