@@ -25,7 +25,7 @@ Return the resulting linear pogram and the optimal solution x.
 If solution is unbounded, return (-1, -1, -1, -1, -1, -1, -1).
 """
 function _innersimplex(N, B, A, b, c, v)
-    Δ = fill(0.0, (1, length(b)))
+    Δ = fill(Inf, (1, length(b)))
     # find index of nonbasic var with positive coef in c
     N⁺ = IntSet(find([j > 0 for j in c]))
     # while some index has cⱼ > 0
@@ -36,12 +36,10 @@ function _innersimplex(N, B, A, b, c, v)
         for i ∈ B
             if A[i, en] > 0
                 Δ[i] = b[i] / A[i, en]
-            else
-                Δ[i] = Inf
             end
         end
         # choose an index l that minimizes Δᵢ
-        lv = indmin(Δ[[i for i ∈ B]])
+        lv = indmin(Δ)
         if Δ[lv] == Inf
             return (-1, -1, -1, -1, -1, -1, -1)
         else
