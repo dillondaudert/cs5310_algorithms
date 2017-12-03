@@ -1,6 +1,8 @@
 #"""
 #The simplex algorithm and helper functions for linear programming
 #"""
+using Base.Test
+include("./basic.jl")
 
 
 """
@@ -13,7 +15,39 @@ Args
 Return a vector x denoting an optimal solution
 """
 function simplex(A, b, c)
+    (N, B, A, b, c, v) = init_simplex(A, b, c)
+    Δ = fill(0.0, size(b, 1))
+    # find index of nonbasic var with positive coef in c
+    N⁺ = IntSet(find([j > 0 for j in c]))
+    # while some index has cⱼ > 0
+    while length(N⁺) > 0
+        # choose index e for which cₑ > 0
+        en = pop(N⁺)
+        # find how much each basic variable constrains xₑ
+        for i ∈ B
+            if A[i, en] > 0
+                Δ[i] = b[i] / A[i, en]
+            else
+                Δ[i] = Inf
+            end
+        end
+        # choose an index l that minimizes Δᵢ
+        lv = indmin(Δ)
+        if Δ[lv] == Inf
+            return "Solution unbounded"
+        else
+            # swap basic and nonbasic variable
+            (N, B, A, b, c, v) = pivot!(N, B, A, b, c, v, en, lv)
+        end
+        N⁺ = IntSet(find([j > 0 for j in c]))
+    end
 
+    x = fill(0.0, size(b, 1))
+    for i ∈ B
+        x[i] = b[i]
+    end
+
+    return x
 end
 
 
@@ -22,7 +56,7 @@ Take a slack form as input, index lv of leaving variable, index en of entering
 variable.
 Return the tuple (N′, B′, A′, b′, c′,v′) describing a new slack form.
 """
-function pivot(N::IntSet, B::IntSet, A, b, c, v, en::Int, lv::Int)
+function pivot!(N::IntSet, B::IntSet, A, b, c, v, en::Int, lv::Int)
     # Compute the coefficients of the equation for a new basic variable xₑ
     b[en] = b[lv] / A[lv, en]
     for j ∈ setdiff(N, en)
@@ -48,14 +82,54 @@ function pivot(N::IntSet, B::IntSet, A, b, c, v, en::Int, lv::Int)
     c[lv] = -c[en]*A[en, lv]
 
     # Compute new sets of basic and nonbasic variables
-    N′ = setdiff(N, en) ∪ lv
-    B′ = setdiff(B, lv) ∪ en
-    return (N′, B′, A, b, c, v′)
+    union!(setdiff!(N, en), lv)
+    union!(setdiff!(B, lv), en)
+    return (N, B, A, b, c, v′)
 end
 
 
-
+"""
+Turn a linear program in standard form into a linear program in slack form,
+where the first basic solution is feasible.
+Return a slack form tuple (N, B, A, b, c, v) or (-1, -1, -1, -1, -1, -1) if
+no feasible solution exists.
+"""
 function initsimplex(A, b, c)
+    # implicitly test the basic solution to the initial slack form
+    n = size(A, 2) # number of nonbasic vars
+    m = size(A, 1) # number of basic vars
+    k = indmin(b)
+    if b[k] ≥ 0
+        # the initial solution is feasible
+        N = IntSet(1:n)
+        B = IntSet(n+1:n+m)
+        # expand to slack form
+        (A′, b′, c′) = expandlp(A, b, c)
+        return (N, B, A′, b′, c′, 0)
+    end
+
+    # form Lₐ by adding -x₀ to the left-hand side of each constraint and 
+    # setting obj function to -x₀
+    # Since Julia is 1-index, this has the effect of adding 1 to all 
+    # variable indices
+    Lₐ, bₐ, cₐ = auxlp(A, b, c)
+    Lₐ, bₐ, cₐ = expandlp(Lₐ, bₐ, cₐ)
+    N = IntSet(1:n+1) #Lₐ has n+1 nonbasic variables
+    B = IntSet(n+2:n+m+1)
+    # Pivot the new nonbasic variable with the basic variable with 
+    # the largest negative value in b
+    lv = n + k + 1
+    en = 1
+    v = 0
+    (N, B, Lₐ, bₐ, cₐ, v) = pivot!(N, B, Lₐ, bₐ, cₐ, v, en, lv)
+    display(Lₐ)
+    print("\n")
+    display(bₐ)
+    print("\n")
+    display(cₐ)
+    @test minimum(bₐ[[i for i ∈ B]]) ≥ 0
+    @test length(N) == n+1
+    @test length(B) == m
 
 end
 
