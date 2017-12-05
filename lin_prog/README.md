@@ -1,6 +1,9 @@
 # Linear Programming in Julia
 An implementation of the Simplex algorithm for linear programming in Julia.
 
+##Examples
+Two example linear programs are solved as an example in *example.jl*
+
 ## Linear Programming
 Given a set of real numbers a_1, a_2, ..., a_n and a set of variables x_1, x_2,
 ..., x_n, we define a ***linear function*** *f* on those variables by
@@ -65,5 +68,3 @@ increases the objective function
 - Increase this nonbasic variable until some other basic variable becomes 0
 - Rewrite the slack form, exchanging the roles of that basic variable and the
 chosen nonbasic variable
-
-&#9658;
