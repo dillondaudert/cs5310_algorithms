@@ -171,7 +171,7 @@ function initsimplex(A, b, c)
         # drop all x₁ terms from this solution and restore original objective
         # function for L
         A′ = Lₐ[2:size(Lₐ, 1), 2:size(Lₐ, 2)] 
-        b′ = bₐ[2:length(bₐ)]
+        b′ = reshape(bₐ[2:length(bₐ)], (1, n+m))
         c′ = fill(0.0, (1, n+m))
         c′[1:n] = c
         # remove 1 from nonbasics, decrement others
