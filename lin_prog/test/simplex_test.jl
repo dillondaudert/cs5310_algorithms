@@ -96,11 +96,21 @@ pivv′ = 12
             @test A′ ≈ initA′ atol=1e-4
             @test b′ ≈ initb′ atol=1e-4
             @test c′ ≈ initc′ atol=1e-4
+            @test v == -4/5
         end
 
-##        @testset "HW 2" begin
-#            (N′, B′, A′, b′, c′, v′, x) = simplex(A₃, b₃, c₃)
-#        end
+        @testset "HW 2" begin
+            (N′, B′, A′, b′, c′, v, x) = simplex(A₃, b₃, c₃)
+            @test N′ == IntSet([3, 4])
+            @test B′ == IntSet([1, 2])
+            @test A′ ≈ [0. 0. 5/9 -1/9;
+                        0. 0. 1/9 -10/45;
+                        0. 0. 0. 0.;
+                        0. 0. 0. 0.] atol=1e-4
+            @test b′ ≈ [14/9 50/45 0. 0.] atol=1e-4
+            @test c′ ≈ [0. 0. -1. 0.] atol=1e-4
+            @test v ≈ 2 atol=1e-4
+        end
 
         A₄ = [-1 1;
               1 3;
