@@ -193,6 +193,7 @@ function initsimplex(A, b, c)
         for basic ∈ swaps
             # replace the basic variables with their constraint values in c
             c′ -= reshape(c′[basic] * A′[basic, :], (1, length(c′)))
+            c′[basic] = 0.0
         end
         
         # return modified final slack form
