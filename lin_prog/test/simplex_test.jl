@@ -98,9 +98,9 @@ pivv′ = 12
             @test c′ ≈ initc′ atol=1e-4
         end
 
-        @testset "HW 2" begin
-            (N′, B′, A′, b′, c′, v′, x) = simplex(A₃, b₃, c₃)
-        end
+##        @testset "HW 2" begin
+#            (N′, B′, A′, b′, c′, v′, x) = simplex(A₃, b₃, c₃)
+#        end
 
         A₄ = [-1 1;
               1 3;

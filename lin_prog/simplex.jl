@@ -2,7 +2,7 @@
 #The simplex algorithm and helper functions for linear programming
 #"""
 using Base.Test
-include("./basic.jl")
+include("./util.jl")
 
 
 """
