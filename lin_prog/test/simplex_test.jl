@@ -76,16 +76,54 @@ pivv′ = 12
             @test b′ ≈ b atol=1e-4
             @test c′ ≈ c atol=1e-4
         end
+
         # pg. 886
         A₃ = [2 -1;
               1 -5;]
         b₃ = [2 -4]
         c₃ = [2 -1]
-        #@testset "Auxiliary Tests" begin
-        #    (N′, B′, A′, b′, c′, v′, x) = simplex(A₃, b₃, c₃)
-        #    @test N′ == IntSet([1, 4])
-        #    @test B′ == IntSet([2, 3])
-        #end
+
+        @testset "initsimplex Tests" begin
+            (N′, B′, A′, b′, c′, v) = initsimplex(A₃, b₃, c₃)
+            initA′ = [0. 0. 0. 0.;
+                      -.2 0. 0. -.2;
+                      1.8 0. 0. -.2;
+                      0. 0. 0. 0.]
+            initb′ = [0. .8 2.8 0.]
+            initc′ = [1.8 0. 0. -0.2]
+            @test N′ == IntSet([1, 4])
+            @test B′ == IntSet([2, 3])
+            @test A′ ≈ initA′ atol=1e-4
+            @test b′ ≈ initb′ atol=1e-4
+            @test c′ ≈ initc′ atol=1e-4
+        end
+
+        @testset "HW 2" begin
+            (N′, B′, A′, b′, c′, v′, x) = simplex(A₃, b₃, c₃)
+        end
+
+        A₄ = [-1 1;
+              1 3;
+              1 -1]
+        b₄ = [3. 13. 1.]
+        c₄ = [1. 2.]
+        trueA′ = [0. 0. 0. 1/4 3/4;
+                  0. 0. 0. 1/4 -1/4;
+                  0. 0. 0. 0. 1.;
+                  0. 0. 0. 0. 0.;
+                  0. 0. 0. 0. 0.]
+        trueb′ = [4. 3. 4. 0. 0.]
+        truec′ = [0. 0. 0. -3/4 -1/4]
+        @testset "HW 1" begin
+            (N′, B′, A′, b′, c′, v′, x) = simplex(A₄, b₄, c₄)
+            @test v′ == 10
+            @test N′ == IntSet([4, 5])
+            @test B′ == IntSet([1, 2, 3])
+            @test A′ ≈ trueA′ atol=1e-4
+            @test b′ ≈ trueb′ atol=1e-4
+            @test c′ ≈ truec′ atol=1e-4
+        end
+
     end
 
 end
