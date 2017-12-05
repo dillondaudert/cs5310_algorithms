@@ -57,5 +57,5 @@ function printlp(A, b, c, N, B, x, v)
         print(lineq(A_[row, :], collect(N)), " ≤ ", string(round(b_[row], 3)), "\n")
     end
 
-    print("Optimal solution: z = $v when ", join((string(xᵢ(i), " = ", round(d, 3)) for (i, d) in enumerate(x)) , ", "), "\n")
+    print("Optimal solution: z = $(round(v, 3)) when ", join((string(xᵢ(i), " = ", round(d, 3)) for (i, d) in enumerate(x)) , ", "), "\n")
 end
