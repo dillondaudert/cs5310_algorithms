@@ -29,3 +29,33 @@ function auxlp(A::AbstractArray, b::AbstractArray, c::AbstractArray)
     cₐ[1] = -1
     return (Lₐ, b, cₐ)
 end
+
+"""
+Print a nicely formatted linear program.
+"""
+function printlp(A, b, c)
+    xᵢ(i) = "x$i"
+    print("Maximize ", join((string(round(x, 3), "*", xᵢ(i)) for (i, x) in enumerate(c)), " + "), "\n")
+    print("Subject to: \n")
+    for row = 1:size(A, 1)
+        print(join((string(round(x, 3), "*", xᵢ(j)) for (j, x) in enumerate(A[row, :])), " + "), " ≤ ", string(round(b[row], 3)), "\n")
+    end
+end
+
+function printlp(A, b, c, N, B, x, v)
+    xᵢ(i) = "x$i"
+    # create view of submatrix with basic rows, nonbasic columns
+    A_ = A[collect(B), collect(N)]
+    b_ = b[collect(B)]
+    c_ = c[collect(N)]
+    lineq(v, V) = join((string(round(x, 3), "*", xᵢ(V[i])) for (i, x) in enumerate(v)), " + ")
+
+    # print nicely
+    print("Maximize ", lineq(c_, collect(N)), "\n")
+    print("Subject to: \n")
+    for row = 1:size(A_, 1)
+        print(lineq(A_[row, :], collect(N)), " ≤ ", string(round(b_[row], 3)), "\n")
+    end
+
+    print("Optimal solution: z = $v when ", join((string(xᵢ(i), " = ", round(d, 3)) for (i, d) in enumerate(x)) , ", "), "\n")
+end
