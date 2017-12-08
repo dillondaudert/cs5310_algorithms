@@ -17,6 +17,8 @@ and set the character counter to 0.
 None
 
 ## References
-man pthreads
-man usleep
-[Dekker's Algorithm](https://wikipedia.org/wiki/Dekker%27s_algorithm)
+- man pthreads
+- man usleep
+- [Dekker's Algorithm](https://wikipedia.org/wiki/Dekker%27s_algorithm)
+- [How To Use C's Volatile Keyword](https://barrgroup.com/Embedded-Systems/How-To/C-Volatile-Keyword)
+- My [previous assignment](https://github.com/dillondaudert/cs5541systems/tree/master/Petersons) on Peterson's algorithm
